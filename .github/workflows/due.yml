@@ -14,7 +14,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 3
     steps:
-      - run: curl -fsS --max-time 100 -H "authorization: Bearer ${{ secrets.DUE_SECRET }}" https://kasuma-app.vercel.app/api/due
+      - run: |
+          curl -fsS --max-time 100 -H "authorization: Bearer ${{ secrets.DUE_SECRET }}" https://kasuma-app.vercel.app/api/due
   keepalive:
     if: github.event.schedule == '17 3 1 * *'
     runs-on: ubuntu-latest

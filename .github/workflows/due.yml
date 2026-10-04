@@ -1,0 +1,27 @@
+# Раз в 10 минут дёргает облачную выкладку kasuma (Instagram + Telegram-канал).
+# Раз в месяц делает пустую отметку, чтобы GitHub не выключил расписание за неактивность.
+name: due
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+    - cron: '17 3 1 * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  due:
+    if: github.event.schedule != '17 3 1 * *'
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - run: curl -fsS --max-time 100 -H "authorization: Bearer ${{ secrets.DUE_SECRET }}" https://kasuma-app.vercel.app/api/due
+  keepalive:
+    if: github.event.schedule == '17 3 1 * *'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          date -u > .keepalive
+          git config user.name kasuma-cron
+          git config user.email cron@users.noreply.github.com
+          git add .keepalive && git commit -m "keepalive" && git push
